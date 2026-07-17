@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>IjazAi - Your AI Assistant</title>
+<meta name="description" content="General purpose AI chatbot assistant powered by Gemini">
+<meta name="theme-color" content="#0D9488">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IjazAi">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">Ij</span>
+      <div class="brand-text">
+        <span class="brand-name">IjazAi</span>
+        <span class="brand-tag" id="statusTag">Not connected</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="newChatBtn" class="icon-btn" title="New chat" aria-label="New chat">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Zm7.4-3.5c0-.6-.05-1.15-.15-1.7l1.85-1.45a.6.6 0 0 0 .14-.76l-1.75-3.03a.6.6 0 0 0-.73-.26l-2.18.87a7.3 7.3 0 0 0-1.47-.85L14.75 3a.6.6 0 0 0-.6-.5h-3.5a.6.6 0 0 0-.6.5l-.36 2.32c-.53.2-1.02.5-1.47.85l-2.18-.87a.6.6 0 0 0-.73.26L3.56 8.6a.6.6 0 0 0 .14.76l1.85 1.45c-.1.55-.15 1.1-.15 1.7 0 .6.05 1.15.15 1.7l-1.85 1.45a.6.6 0 0 0-.14.76l1.75 3.03c.15.26.46.36.73.26l2.18-.87c.45.35.94.65 1.47.85l.36 2.32c.05.29.3.5.6.5h3.5c.3 0 .55-.21.6-.5l.36-2.32c.53-.2 1.02-.5 1.47-.85l2.18.87c.27.1.58 0 .73-.26l1.75-3.03a.6.6 0 0 0-.14-.76l-1.85-1.45c.1-.55.15-1.1.15-1.7Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Chat area -->
+  <main id="chatArea" class="chat-area">
+    <div id="emptyState" class="empty-state">
+      <div class="empty-mark">Ij</div>
+      <h1>IjazAi</h1>
+      <p>Aapka general purpose AI assistant. Kuch bhi poochein — study, kaam, ya bas baat cheet.</p>
+      <div class="suggestion-grid">
+        <button class="suggestion-chip" data-prompt="Aaj ka mausam kaisa raihta hai, iske baray mein bataein.">Mausam ke baray mein poochein</button>
+        <button class="suggestion-chip" data-prompt="Mujhe ek 5 din ka study plan bana kar dein Class 8 English exam k liye.">Study plan banayein</button>
+        <button class="suggestion-chip" data-prompt="Photosynthesis kya hai, asaan lafzon mein samjhaein.">Koi topic samjhein</button>
+        <button class="suggestion-chip" data-prompt="Ek chota sa motivational paragraph likh dein students k liye.">Kuch likh kar dein</button>
+      </div>
+    </div>
+    <div id="messages" class="messages" hidden></div>
+  </main>
+
+  <!-- Composer -->
+  <form id="composerForm" class="composer">
+    <textarea id="promptInput" class="composer-input" placeholder="IjazAi se kuch bhi poochein..." rows="1"></textarea>
+    <button type="submit" id="sendBtn" class="send-btn" aria-label="Send">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3.4 20.6 22 12 3.4 3.4 3 10l13 2-13 2z"/></svg>
+    </button>
+  </form>
+
+</div>
+
+<!-- Settings modal -->
+<div id="settingsModal" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button id="closeSettingsBtn" class="icon-btn" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label" for="apiKeyInput">Gemini API Key</label>
+      <input type="password" id="apiKeyInput" class="field-input" placeholder="AIza...">
+      <p class="field-hint">
+        Free Gemini API key <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> se milti hai.
+        Key sirf aapke phone/browser mein (localStorage) save hoti hai, kahin aur nahi jati.
+      </p>
+
+      <label class="field-label" for="systemPromptInput">Assistant ka andaz (optional)</label>
+      <textarea id="systemPromptInput" class="field-input" rows="3" placeholder="e.g. Roman Urdu aur English mila kar, dost jaisa lehja rakho."></textarea>
+
+      <button id="saveSettingsBtn" class="primary-btn" type="button">Save</button>
+      <p id="settingsMsg" class="settings-msg" hidden></p>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="script.js"></script>
+</body>
+</html>
